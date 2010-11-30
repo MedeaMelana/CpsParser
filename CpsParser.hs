@@ -45,10 +45,7 @@ infixl 4 `ɟmap`
 ɟmap f (CpsParser p) = CpsParser $ (. f) <$> p
 
 run :: CpsParser b (a -> a) -> String -> b
-run (CpsParser p) s =
-  case P.runParser (p <* P.eof) () "" s of
-    Right res -> res id
-    Left err -> error (show err)
+run p s = run' p s id
 
 run' :: CpsParser b a -> String -> a -> b
 run' (CpsParser p) s =
