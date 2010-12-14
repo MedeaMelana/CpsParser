@@ -95,15 +95,6 @@ neg = (\k x -> k (- x)) `ɟmap` str "-"
 pos :: CpsParser (Int -> r) (Int -> r)
 pos = (\k x -> k x) `ɟmap` str "+"
 
-chainr :: (forall r. CpsParser r (a -> r)) -> (forall r. CpsParser (a -> a -> r) (a -> r)) -> CpsParser r (a -> r)
--- chainr :: (forall r. CpsParser r (a -> b -> r)) -> (forall r. CpsParser (a -> b -> a -> b -> r) (a -> b -> r)) -> CpsParser r (a -> b -> r)
-chainr x op = x .~ cmany (op . x)
-
-cmany :: CpsParser r r -> CpsParser r r
--- cmany :: (Category (~>), Monoid (r ~> r)) => r ~> r -> r ~> r
-cmany p = p . cmany p <> id
-
-
 
 
 data Expr = Num Int | Add Expr Expr
