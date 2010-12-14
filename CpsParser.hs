@@ -59,6 +59,24 @@ cpure x = ($ x) `ɟmap` id
 csatisfy :: (Char -> Bool) -> CpsParser r (Char -> r)
 csatisfy f = CpsParser $ (\c k -> k c) <$> P.satisfy f
 
+opt :: CpsParser r r -> CpsParser r r
+opt = (<> id)
+
+manyr :: CpsParser r r -> CpsParser r r
+manyr = opt . somer
+
+somer :: CpsParser r r -> CpsParser r r
+somer p = p . manyr p
+
+chainr1 :: (forall r. CpsParser r (a -> r)) -> (forall r. CpsParser (a -> a -> r) (a -> r)) -> CpsParser r (a -> r)
+chainr1 p op = manyr (p .~ op) . p
+
+manyl :: CpsParser r r -> CpsParser r r
+manyl = opt . somel
+
+somel :: CpsParser r r -> CpsParser r r
+somel p = p .~ manyl p
+
 char :: CpsParser r (Char -> r)
 char = csatisfy (const True)
 
