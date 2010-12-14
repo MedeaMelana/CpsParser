@@ -59,8 +59,8 @@ push x = pure ($ x)
 pure :: (a -> b) -> CpsParser b a
 pure f = CpsParser (A.pure f)
 
-csatisfy :: (Char -> Bool) -> CpsParser r (Char -> r)
-csatisfy f = CpsParser $ (\c k -> k c) <$> P.satisfy f
+satisfy :: (Char -> Bool) -> CpsParser r (Char -> r)
+satisfy f = CpsParser $ (\c k -> k c) <$> P.satisfy f
 
 opt :: CpsParser r r -> CpsParser r r
 opt = (<> id)
@@ -81,7 +81,7 @@ somel :: CpsParser r r -> CpsParser r r
 somel p = p .~ manyl p
 
 char :: CpsParser r (Char -> r)
-char = csatisfy (const True)
+char = satisfy (const True)
 
 plus :: CpsParser (Int -> Int -> r) (Int -> r)
 plus = (\k x y -> k (x + y)) `ɟmap` id
