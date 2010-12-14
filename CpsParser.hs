@@ -40,10 +40,6 @@ digit = CpsParser $ (\c k -> k (read [c])) <$> P.digit
 str :: String -> CpsParser r r
 str s = CpsParser $ id <$ P.string s
 
-infixl 4 `ɟmap`
-ɟmap :: (b -> a) -> CpsParser r a -> CpsParser r b
-ɟmap f (CpsParser p) = CpsParser $ (. f) <$> p
-
 runId :: CpsParser b (a -> a) -> String -> b
 runId p s = run p s id
 
@@ -84,16 +80,16 @@ char :: CpsParser r (Char -> r)
 char = satisfy (const True)
 
 plus :: CpsParser (Int -> Int -> r) (Int -> r)
-plus = (\k x y -> k (x + y)) `ɟmap` id
+plus = pure (\k x y -> k (x + y)) . str "+"
 
 minus :: CpsParser (Int -> Int -> r) (Int -> r)
-minus = (\k x y -> k (x - y)) `ɟmap` str "-"
+minus = pure (\k x y -> k (x - y)) . str "-"
 
 neg :: CpsParser (Int -> r) (Int -> r)
-neg = (\k x -> k (- x)) `ɟmap` str "-"
+neg = pure (\k x -> k (- x)) . str "-"
 
 pos :: CpsParser (Int -> r) (Int -> r)
-pos = (\k x -> k x) `ɟmap` str "+"
+pos = pure (\k x -> k x) . str "+"
 
 
 
