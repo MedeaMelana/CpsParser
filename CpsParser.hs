@@ -53,8 +53,11 @@ run (CpsParser p) s =
     Right res -> res
     Left err -> error (show err)
 
-cpure :: a -> CpsParser r (a -> r)
-cpure x = ($ x) `ɟmap` id
+push :: a -> CpsParser r (a -> r)
+push x = pure ($ x)
+
+pure :: (a -> b) -> CpsParser b a
+pure f = CpsParser (A.pure f)
 
 csatisfy :: (Char -> Bool) -> CpsParser r (Char -> r)
 csatisfy f = CpsParser $ (\c k -> k c) <$> P.satisfy f
@@ -106,5 +109,8 @@ cmany p = p . cmany p <> id
 data Expr = Num Int | Add Expr Expr
   deriving (Eq, Show)
 
-num = (\k n -> k (Num n)) `ɟmap` int
-add = (\k y x -> k (Add x y)) `ɟmap` str "+"
+num :: CpsParser (Int -> r) (Expr -> r)
+num = pure (\k n -> k (Num n))
+
+add :: CpsParser (Expr -> Expr -> r) (Expr -> r)
+add = pure (\k x y -> k (Add x y))
