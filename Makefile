@@ -1,2 +1,2 @@
 run:
-	ghci CpsParser
+	ghci -Wall CpsParser
