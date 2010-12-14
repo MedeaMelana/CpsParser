@@ -81,10 +81,10 @@ char :: CpsParser r (Char -> r)
 char = csatisfy (const True)
 
 plus :: CpsParser (Int -> Int -> r) (Int -> r)
-plus = (\k y x -> k (x + y)) `ɟmap` id
+plus = (\k x y -> k (x + y)) `ɟmap` id
 
 minus :: CpsParser (Int -> Int -> r) (Int -> r)
-minus = (\k y x -> k (x - y)) `ɟmap` str "-"
+minus = (\k x y -> k (x - y)) `ɟmap` str "-"
 
 neg :: CpsParser (Int -> r) (Int -> r)
 neg = (\k x -> k (- x)) `ɟmap` str "-"
