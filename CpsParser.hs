@@ -5,15 +5,15 @@ module CpsParser where
 
 import Prelude hiding (id, (.))
 import Control.Category
-import Control.Applicative
-import Control.Monad
+import qualified Control.Applicative as A
+import Control.Applicative ((<$>), (<*>), (<*), (<$), (<|>))
 import qualified Text.Parsec as P
 import Data.Monoid
 
 newtype CpsParser b a = CpsParser (P.Parsec String () (a -> b))
 
 instance Category CpsParser where
-  id = CpsParser (pure id)
+  id = CpsParser (A.pure id)
   CpsParser p . CpsParser q = CpsParser $ flip (.) <$> p <*> q
 
 infixr 9 .~
@@ -21,7 +21,7 @@ infixr 9 .~
 CpsParser p .~ CpsParser q = CpsParser $ (.) <$> p <*> q
 
 instance Monoid (CpsParser a b) where
-  mempty = CpsParser empty
+  mempty = CpsParser A.empty
   CpsParser p `mappend` CpsParser q = CpsParser $ P.try p <|> q
 
 infixl 3 <>
