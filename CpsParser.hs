@@ -52,6 +52,9 @@ run (CpsParser p) s =
 push :: a -> CpsParser r (a -> r)
 push x = pure ($ x)
 
+discard :: CpsParser (a -> r) r
+discard = pure const
+
 pure :: (a -> b) -> CpsParser b a
 pure f = CpsParser (A.pure f)
 
